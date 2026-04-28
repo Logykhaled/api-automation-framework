@@ -1,0 +1,6 @@
+scenario,action,email,password,name,job,user_id,expected_status,expected_field,expected_value
+Valid login,login,eve.holt@reqres.in,cityslicka,,,,200,token,exists
+Login Missing Password,login,user1@test.com,,,,,400,error,Missing password
+"Update Valid User					 		",update,user3@test.com,123456,Waleed,Senior,2,200,name,Waleed
+Create Valid User,register,eve.holt@reqres.in,pistol,Ali,QA,,200,name,Ali
+"Delete Valid User		",delete,user4@test.com,123456,,,2,204,body,empty

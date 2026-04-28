@@ -1,0 +1,569 @@
+{
+  "info": {
+    "_postman_id": "0a7a1abe-69cf-4851-84d8-a355523d60f5",
+    "name": "API Automation project",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52246076",
+    "_collection_link": "https://go.postman.co/collection/52246076-0a7a1abe-69cf-4851-84d8-a355523d60f5?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Router",
+      "item": [
+        {
+          "name": "Router",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "let action = pm.iterationData.get(\"action\");\r",
+                  "\r",
+                  "switch (action) {\r",
+                  "\r",
+                  "    case \"login\":\r",
+                  "        pm.execution.setNextRequest(\"login\")\r",
+                  "        break;\r",
+                  "\r",
+                  "    case \"register\":\r",
+                  "         pm.execution.setNextRequest(\"register\")\r",
+                  "        break;\r",
+                  "\r",
+                  "    case \"update\":\r",
+                  "         pm.execution.setNextRequest(\"update user\")\r",
+                  "        break;\r",
+                  "\r",
+                  "    case \"delete\":\r",
+                  "        pm.execution.setNextRequest(\"delete\")\r",
+                  "        break;\r",
+                  "\r",
+                  "    default:\r",
+                  "          pm.execution.setNextRequest(null)\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://postman-echo.com/get",
+              "protocol": "https",
+              "host": [
+                "postman-echo",
+                "com"
+              ],
+              "path": [
+                "get"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let action = pm.iterationData.get(\"action\");\r",
+                  "let expectedStatus = parseInt(pm.iterationData.get(\"expected_status\"));\r",
+                  "\r",
+                  "let jsonData = {};\r",
+                  "try {\r",
+                  "    jsonData = pm.response.json();\r",
+                  "} catch(e){}\r",
+                  "\r",
+                  "// 🛑 Guard مهم\r",
+                  "if (!action || isNaN(expectedStatus)) {\r",
+                  "    console.log(\"CSV issue:\", pm.iterationData.toObject());\r",
+                  "    return;\r",
+                  "}\r",
+                  "\r",
+                  "if (action === \"register\") {\r",
+                  "\r",
+                  "    if (expectedStatus === 200) {\r",
+                  "\r",
+                  "        pm.test(\"ID exists\", function () {\r",
+                  "            pm.expect(jsonData.id).to.exist;\r",
+                  "        });\r",
+                  "\r",
+                  "    } else {\r",
+                  "\r",
+                  "        pm.test(\"Register error exists\", function () {\r",
+                  "            pm.expect(jsonData).to.have.property(\"error\");\r",
+                  "        });\r",
+                  "    }\r",
+                  "}\r",
+                  "\r",
+                  "// ✅ الصح\r",
+                  "pm.execution.setNextRequest(null)\r",
+                  "console.log(\"EXPECTED STATUS:\", pm.iterationData.get(\"expected_status\"));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "reqres_c8e6d3e338ba4c1e8ff3b059094efe7e"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"{{email}}\", \"password\": \"{{password}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://reqres.in/api/register",
+              "protocol": "https",
+              "host": [
+                "reqres",
+                "in"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST 'https://reqres.in/api/register' -H 'x-api-key: reqres_c8e6d3e338ba4c1e8ff3b059094efe7e' -H 'Content-Type: application/json' -d '{\"email\": \"eve.holt@reqres.in\", \"password\": \"pistol\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let action = pm.iterationData.get(\"action\");\r",
+                  "let expectedStatus = parseInt(pm.iterationData.get(\"expected_status\"));\r",
+                  "let jsonData = {};\r",
+                  "try {\r",
+                  "    jsonData = pm.response.json();\r",
+                  "} catch(e){}\r",
+                  "\r",
+                  "if (action === \"login\") {\r",
+                  "\r",
+                  "    if (expectedStatus === 200) {\r",
+                  "\r",
+                  "        pm.test(\"Token exists\", function () {\r",
+                  "            pm.expect(jsonData.token).to.exist;\r",
+                  "        });\r",
+                  "\r",
+                  "        pm.test(\"Token not empty\", function () {\r",
+                  "            pm.expect(jsonData.token).to.not.be.empty;\r",
+                  "        });\r",
+                  "\r",
+                  "    } else {\r",
+                  "\r",
+                  "        pm.test(\"Error exists\", function () {\r",
+                  "            pm.expect(jsonData).to.have.property(\"error\");\r",
+                  "        });\r",
+                  "    }\r",
+                  "}\r",
+                  "\r",
+                  "pm.execution.setNextRequest(null)"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "reqres_c8e6d3e338ba4c1e8ff3b059094efe7e"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"{{email}}\", \"password\": \"{{password}}\"}\r\n\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://reqres.in/api/login",
+              "protocol": "https",
+              "host": [
+                "reqres",
+                "in"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST 'https://reqres.in/api/login' -H 'x-api-key: reqres_c8e6d3e338ba4c1e8ff3b059094efe7e' -H 'Content-Type: application/json' -d '{\"email\": \"eve.holt@reqres.in\", \"password\": \"cityslicka\"}'"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Lifecycle Flow",
+      "item": [
+        {
+          "name": "update user",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let action = pm.iterationData.get(\"action\");\r",
+                  "let expectedStatus = parseInt(pm.iterationData.get(\"expected_status\"));\r",
+                  "let jsonData = {};\r",
+                  "try {\r",
+                  "    jsonData = pm.response.json();\r",
+                  "} catch(e){}\r",
+                  "\r",
+                  "if (action === \"update\") {\r",
+                  "\r",
+                  "    pm.test(\"Name updated correctly\", function () {\r",
+                  "        pm.expect(jsonData.name).to.eql(pm.iterationData.get(\"name\"));\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Job updated correctly\", function () {\r",
+                  "        pm.expect(jsonData.job).to.eql(pm.iterationData.get(\"job\"));\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"updatedAt exists\", function () {\r",
+                  "        pm.expect(jsonData.updatedAt).to.exist;\r",
+                  "    });\r",
+                  "    pm.test(\"Response is JSON\", function () {\r",
+                  "         pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+                  "        });\r",
+                  "}\r",
+                  "pm.execution.setNextRequest(null)"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "reqres_c8e6d3e338ba4c1e8ff3b059094efe7e"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{name}}\",\r\n  \"job\": \"{{job}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://reqres.in/api/users/{{user_id}}",
+              "protocol": "https",
+              "host": [
+                "reqres",
+                "in"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Generated from cURL: curl -X PUT 'https://reqres.in/api/users/2' -H 'x-api-key: reqres_c8e6d3e338ba4c1e8ff3b059094efe7e' -H 'Content-Type: application/json' -d '{\"name\": \"morpheus\", \"job\": \"zion resident\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let action = pm.iterationData.get(\"action\");\r",
+                  "let expectedStatus = parseInt(pm.iterationData.get(\"expected_status\"));\r",
+                  "\r",
+                  "if (action === \"delete\") {\r",
+                  "\r",
+                  "    pm.test(\"Delete status is 204\", function () {\r",
+                  "        pm.expect(pm.response.code).to.eql(204);\r",
+                  "    });\r",
+                  "\r",
+                  "    \r",
+                  "}\r",
+                  "pm.execution.setNextRequest(null)"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "reqres_c8e6d3e338ba4c1e8ff3b059094efe7e"
+              }
+            ],
+            "url": {
+              "raw": "https://reqres.in/api/users/{{user_id}}",
+              "protocol": "https",
+              "host": [
+                "reqres",
+                "in"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Generated from cURL: curl -X DELETE 'https://reqres.in/api/users/2' -H 'x-api-key: reqres_c8e6d3e338ba4c1e8ff3b059094efe7e'"
+          },
+          "response": []
+        },
+        {
+          "name": "Get user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let action = pm.iterationData.get(\"action\");\r",
+                  "let expectedStatus = parseInt(pm.iterationData.get(\"expected_status\"));\r",
+                  "let jsonData = {};\r",
+                  "try {\r",
+                  "    jsonData = pm.response.json();\r",
+                  "} catch(e){}\r",
+                  "\r",
+                  "pm.test(\"User not found after delete\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+                  "});\r",
+                  "pm.execution.setNextRequest(null)"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/{{deleted_user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{deleted_user_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Management Flow",
+      "item": [
+        {
+          "name": "List users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "reqres_c8e6d3e338ba4c1e8ff3b059094efe7e"
+              }
+            ],
+            "url": {
+              "raw": "https://reqres.in/api/users?page=2",
+              "protocol": "https",
+              "host": [
+                "reqres",
+                "in"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET 'https://reqres.in/api/users?page=2' -H 'x-api-key: reqres_c8e6d3e338ba4c1e8ff3b059094efe7e'"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single user",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "reqres_c8e6d3e338ba4c1e8ff3b059094efe7e"
+              }
+            ],
+            "url": {
+              "raw": "https://reqres.in/api/users/{{user_id}}",
+              "protocol": "https",
+              "host": [
+                "reqres",
+                "in"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET 'https://reqres.in/api/users/2' -H 'x-api-key: reqres_c8e6d3e338ba4c1e8ff3b059094efe7e'"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "if (pm.info.iteration === 0) {\r",
+          "    pm.environment.set(\"total\", 0);\r",
+          "    pm.environment.set(\"passed\", 0);\r",
+          "    pm.environment.set(\"failed\", 0);\r",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "let action = pm.iterationData.get(\"action\");\r",
+          "let expectedStatus = parseInt(pm.iterationData.get(\"expected_status\"));\r",
+          "\r",
+          "let jsonData = {};\r",
+          "try { jsonData = pm.response.json(); } catch(e){}\r",
+          "\r",
+          "// ✅ Status Code (مشترك)\r",
+          "pm.test(`${action} - status code`, function () {\r",
+          "    pm.expect(pm.response.code).to.eql(expectedStatus);\r",
+          "});\r",
+          ""
+        ]
+      }
+    }
+  ]
+}
