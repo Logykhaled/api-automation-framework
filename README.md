@@ -61,6 +61,8 @@ The framework generates a detailed HTML report including:
 * Passed vs Failed tests
 * Execution time
 * Detailed assertion results
+ <img width="922" height="902" alt="image" src="https://github.com/user-attachments/assets/9d76ac15-d2c5-44e6-990c-adddfdd52c4f" />
+
 
 ---
 
