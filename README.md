@@ -101,7 +101,7 @@ newman run "API Automation project.json" \
 
 ## 🎥 Demo Video
 
-👉 [Add your video link here]
+👉 (https://youtu.be/l3KxEcXxY1c)
 
 ---
 
